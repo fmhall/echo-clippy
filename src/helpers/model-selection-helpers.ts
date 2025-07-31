@@ -12,7 +12,8 @@ export function getActiveModel(state: SharedState): {
 } {
   // Check for Echo model first (highest precedence)
   if (state.settings.selectedEchoModel && state.settings.echoApiKey) {
-    const echoModel = state.echoModels[state.settings.selectedEchoModel as EchoModelName];
+    const echoModel =
+      state.echoModels[state.settings.selectedEchoModel as EchoModelName];
     return {
       type: "echo",
       model: state.settings.selectedEchoModel,
@@ -52,10 +53,13 @@ export function validateModelSelectionState(state: SharedState): {
     if (!state.settings.echoApiKey) {
       issues.push("Echo model selected but no API key configured");
     }
-    
-    const echoModel = state.echoModels[state.settings.selectedEchoModel as EchoModelName];
+
+    const echoModel =
+      state.echoModels[state.settings.selectedEchoModel as EchoModelName];
     if (!echoModel) {
-      issues.push(`Selected Echo model '${state.settings.selectedEchoModel}' not found in available models`);
+      issues.push(
+        `Selected Echo model '${state.settings.selectedEchoModel}' not found in available models`,
+      );
     }
   }
 
@@ -63,9 +67,13 @@ export function validateModelSelectionState(state: SharedState): {
   if (state.settings.selectedModel) {
     const localModel = state.models[state.settings.selectedModel];
     if (!localModel) {
-      issues.push(`Selected local model '${state.settings.selectedModel}' not found in available models`);
+      issues.push(
+        `Selected local model '${state.settings.selectedModel}' not found in available models`,
+      );
     } else if (!localModel.downloaded) {
-      issues.push(`Selected local model '${state.settings.selectedModel}' is not downloaded`);
+      issues.push(
+        `Selected local model '${state.settings.selectedModel}' is not downloaded`,
+      );
     }
   }
 
@@ -80,7 +88,7 @@ export function validateModelSelectionState(state: SharedState): {
  */
 export function getModelSelectionDescription(state: SharedState): string {
   const activeModel = getActiveModel(state);
-  
+
   switch (activeModel.type) {
     case "echo":
       return `Echo Model: ${activeModel.model} ${activeModel.isReady ? "(Ready)" : "(Configuration Issue)"}`;

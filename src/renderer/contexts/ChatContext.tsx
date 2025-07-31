@@ -70,7 +70,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<ClippyNamedStatus>("welcome");
   const [isModelLoaded, setIsModelLoaded] = useState(false);
   const { settings, models } = useContext(SharedStateContext);
-  
+
   // Compute if any model (Echo or local) is ready to use
   const isAnyModelReady = useMemo(() => {
     const hasEchoModel = !!(settings.selectedEchoModel && settings.echoApiKey);
@@ -238,10 +238,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const shouldLoadLocalModel = !hasEchoModel && settings.selectedModel;
 
     if (shouldLoadLocalModel) {
-      console.log('ChatContext: Loading local model:', settings.selectedModel);
+      console.log("ChatContext: Loading local model:", settings.selectedModel);
       loadModel();
     } else if (!shouldLoadLocalModel && isModelLoaded) {
-      console.log('ChatContext: Destroying local model, Echo model or no model selected');
+      console.log(
+        "ChatContext: Destroying local model, Echo model or no model selected",
+      );
       electronAi
         .destroy()
         .then(() => {
@@ -251,7 +253,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           console.error(error);
         });
     } else if (hasEchoModel) {
-      console.log('ChatContext: Echo model selected, not loading local model');
+      console.log("ChatContext: Echo model selected, not loading local model");
       setIsModelLoaded(false); // Not using local model
     }
   }, [
@@ -263,11 +265,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     settings.temperature,
   ]);
 
-  // If no Echo model is selected and no local model is selected or available, 
+  // If no Echo model is selected and no local model is selected or available,
   // set it to the first downloaded local model
   useEffect(() => {
     const hasEchoModel = !!(settings.selectedEchoModel && settings.echoApiKey);
-    
+
     // Don't auto-select local model if Echo model is active
     if (hasEchoModel) {
       return;
@@ -283,7 +285,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       );
 
       if (downloadedModel) {
-        console.log('ChatContext: Auto-selecting local model:', downloadedModel.name);
+        console.log(
+          "ChatContext: Auto-selecting local model:",
+          downloadedModel.name,
+        );
         clippyApi.setState("settings.selectedModel", downloadedModel.name);
       }
     }
@@ -408,4 +413,3 @@ function messagesToInitialPrompts(messages: Message[]): LanguageModelPrompt[] {
     content: message.content || "",
   }));
 }
-

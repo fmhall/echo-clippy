@@ -25,7 +25,7 @@ export function Chat({ style }: ChatProps) {
   };
 
   const handleSendMessage = async (message: string) => {
-    log('Chat sending message');
+    log("Chat sending message");
     if (status !== "idle") {
       return;
     }
@@ -114,5 +114,3 @@ export function Chat({ style }: ChatProps) {
     </div>
   );
 }
-
-

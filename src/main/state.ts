@@ -45,8 +45,7 @@ export class StateManager {
       if (!model) {
         settings.selectedEchoModel = undefined;
       }
-    }
-    else if (settings.selectedModel) {
+    } else if (settings.selectedModel) {
       const model = this.store.get("models")[settings.selectedModel];
 
       if (!model || !isModelOnDisk(model)) {

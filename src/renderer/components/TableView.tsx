@@ -200,11 +200,11 @@ export const TableView: React.FC<TableViewProps> = ({
   return (
     <div
       className="sunken-panel"
-      style={{ 
-        ...style, 
+      style={{
+        ...style,
         outline: "none",
         overflow: "auto",
-        display: "block"
+        display: "block",
       }}
       ref={tableRef}
       tabIndex={0}
@@ -213,7 +213,14 @@ export const TableView: React.FC<TableViewProps> = ({
         className="interactive"
         style={{ width: "100%", tableLayout: "fixed" }}
       >
-        <thead style={{ position: "sticky", top: 0, backgroundColor: "#c0c0c0", zIndex: 1 }}>
+        <thead
+          style={{
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#c0c0c0",
+            zIndex: 1,
+          }}
+        >
           <tr>
             {columns.map((column) => (
               <th

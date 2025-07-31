@@ -10,7 +10,12 @@ import { SettingsAbout } from "./SettingsAbout";
 import { SettingsParameters } from "./SettingsParameters";
 import { SettingsEcho } from "./SettingsEcho";
 
-export type SettingsTab = "appearance" | "model" | "echo" | "advanced" | "about";
+export type SettingsTab =
+  | "appearance"
+  | "model"
+  | "echo"
+  | "advanced"
+  | "about";
 
 export type SettingsProps = {
   onClose: () => void;

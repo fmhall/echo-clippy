@@ -20,16 +20,19 @@ export const EchoModelTable: React.FC = () => {
 
   // Convert echo models to table data
   const { modelKeys, data } = useMemo(() => {
-    console.log('EchoModelTable: echoModels data:', echoModels);
-    console.log('EchoModelTable: echoModels keys:', Object.keys(echoModels || {}));
-    
+    console.log("EchoModelTable: echoModels data:", echoModels);
+    console.log(
+      "EchoModelTable: echoModels keys:",
+      Object.keys(echoModels || {}),
+    );
+
     const keys = Object.keys(echoModels || {}) as EchoModelName[];
     const tableData = keys.map((modelKey) => {
       const model = echoModels[modelKey];
-      console.log('EchoModelTable: Processing model:', modelKey, model);
-      
+      console.log("EchoModelTable: Processing model:", modelKey, model);
+
       if (!model) {
-        console.warn('EchoModelTable: Model data is missing for:', modelKey);
+        console.warn("EchoModelTable: Model data is missing for:", modelKey);
         return {
           selected: "",
           name: modelKey,
@@ -39,22 +42,26 @@ export const EchoModelTable: React.FC = () => {
           provider: "Unknown",
         };
       }
-      
+
       return {
         selected: modelKey === settings.selectedEchoModel ? "✓" : "",
         name: modelKey,
         maxTokens: model.max_tokens?.toLocaleString() || "N/A",
-        inputCost: model.input_cost_per_token ? `$${(model.input_cost_per_token * 1000000).toFixed(2)}` : "N/A",
-        outputCost: model.output_cost_per_token ? `$${(model.output_cost_per_token * 1000000).toFixed(2)}` : "N/A",
+        inputCost: model.input_cost_per_token
+          ? `$${(model.input_cost_per_token * 1000000).toFixed(2)}`
+          : "N/A",
+        outputCost: model.output_cost_per_token
+          ? `$${(model.output_cost_per_token * 1000000).toFixed(2)}`
+          : "N/A",
         provider: (model as any).litellm_provider || "OpenAI",
       };
     });
-    
-    console.log('EchoModelTable: Final table data:', tableData);
-    
+
+    console.log("EchoModelTable: Final table data:", tableData);
+
     // If no data, provide some test data to verify table is working
     if (tableData.length === 0) {
-      console.log('EchoModelTable: No data found, providing test data');
+      console.log("EchoModelTable: No data found, providing test data");
       return {
         modelKeys: ["gpt-4o-mini", "gpt-4o", "claude-3-5-sonnet"],
         data: [
@@ -85,7 +92,7 @@ export const EchoModelTable: React.FC = () => {
         ],
       };
     }
-    
+
     return { modelKeys: keys, data: tableData };
   }, [echoModels, settings.selectedEchoModel]);
 
@@ -128,7 +135,8 @@ export const EchoModelTable: React.FC = () => {
         >
           <h3>Echo API Key Required</h3>
           <p>
-            To use Echo models, you need to configure your API key in the Echo settings.
+            To use Echo models, you need to configure your API key in the Echo
+            settings.
           </p>
           <button
             onClick={openEchoSettings}
@@ -137,7 +145,7 @@ export const EchoModelTable: React.FC = () => {
             Configure Echo Settings
           </button>
         </div>
-        
+
         <div style={{ opacity: 0.5 }}>
           <h4>Available Echo Models (Preview)</h4>
           <TableView
@@ -158,8 +166,8 @@ export const EchoModelTable: React.FC = () => {
           <strong>Cloud AI Models</strong> - Powered by Echo API
         </p>
         <p style={{ fontSize: "12px", color: "#666" }}>
-          These models run in the cloud and don't require local downloads.
-          Usage is charged per token based on the model's pricing.
+          These models run in the cloud and don't require local downloads. Usage
+          is charged per token based on the model's pricing.
         </p>
       </div>
 
@@ -176,39 +184,63 @@ export const EchoModelTable: React.FC = () => {
           className="model-details sunken-panel"
           style={{ marginTop: "20px", padding: "15px" }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
             <div>
               <strong>{selectedModel}</strong>
-              <div style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}>
-                <div>Max Input Tokens: {selectedModelData.max_input_tokens?.toLocaleString() || "N/A"}</div>
-                <div>Max Output Tokens: {selectedModelData.max_output_tokens?.toLocaleString() || "N/A"}</div>
-                <div>Provider: {(selectedModelData as any).litellm_provider || "OpenAI"}</div>
+              <div
+                style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}
+              >
+                <div>
+                  Max Input Tokens:{" "}
+                  {selectedModelData.max_input_tokens?.toLocaleString() ||
+                    "N/A"}
+                </div>
+                <div>
+                  Max Output Tokens:{" "}
+                  {selectedModelData.max_output_tokens?.toLocaleString() ||
+                    "N/A"}
+                </div>
+                <div>
+                  Provider:{" "}
+                  {(selectedModelData as any).litellm_provider || "OpenAI"}
+                </div>
               </div>
             </div>
-            
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+            >
               {!isCurrentlySelected ? (
-                <button onClick={handleSelectModel} style={{ padding: "6px 12px" }}>
+                <button
+                  onClick={handleSelectModel}
+                  style={{ padding: "6px 12px" }}
+                >
                   Select This Model
                 </button>
               ) : (
                 <>
                   <button
                     disabled
-                    style={{ 
-                      padding: "6px 12px", 
+                    style={{
+                      padding: "6px 12px",
                       backgroundColor: "#e0f0e0",
-                      border: "1px solid #90c090" 
+                      border: "1px solid #90c090",
                     }}
                   >
                     ✓ Currently Selected
                   </button>
                   <button
                     onClick={handleClearSelection}
-                    style={{ 
-                      padding: "6px 12px", 
+                    style={{
+                      padding: "6px 12px",
                       fontSize: "11px",
-                      backgroundColor: "#f0f0f0" 
+                      backgroundColor: "#f0f0f0",
                     }}
                   >
                     Clear Selection
@@ -219,21 +251,31 @@ export const EchoModelTable: React.FC = () => {
           </div>
 
           {/* Pricing Information */}
-          <div style={{ 
-            marginTop: "15px", 
-            padding: "10px", 
-            backgroundColor: "#f8f8f8", 
-            borderRadius: "4px",
-            fontSize: "11px" 
-          }}>
+          <div
+            style={{
+              marginTop: "15px",
+              padding: "10px",
+              backgroundColor: "#f8f8f8",
+              borderRadius: "4px",
+              fontSize: "11px",
+            }}
+          >
             <strong>Pricing per million tokens:</strong>
-            <div>Input: ${(selectedModelData.input_cost_per_token * 1000000).toFixed(2)}</div>
-            <div>Output: ${(selectedModelData.output_cost_per_token * 1000000).toFixed(2)}</div>
+            <div>
+              Input: $
+              {(selectedModelData.input_cost_per_token * 1000000).toFixed(2)}
+            </div>
+            <div>
+              Output: $
+              {(selectedModelData.output_cost_per_token * 1000000).toFixed(2)}
+            </div>
           </div>
 
           {/* Model Capabilities */}
           {(selectedModelData as any).supports_vision && (
-            <div style={{ marginTop: "10px", fontSize: "12px", color: "#0066cc" }}>
+            <div
+              style={{ marginTop: "10px", fontSize: "12px", color: "#0066cc" }}
+            >
               ✓ Supports Vision (Image Input)
             </div>
           )}

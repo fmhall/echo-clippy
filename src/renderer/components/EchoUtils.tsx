@@ -1,9 +1,8 @@
-import { EchoClient } from '@zdql/echo-typescript-sdk';
+import { EchoClient } from "@zdql/echo-typescript-sdk";
 import type {
   CreatePaymentLinkResponse,
   Balance,
-} from '@zdql/echo-typescript-sdk';
-
+} from "@zdql/echo-typescript-sdk";
 
 /**
  * Get an authenticated Echo client
@@ -13,10 +12,10 @@ import type {
  */
 export async function getAuthenticatedEchoClient(
   apiKey: string,
-  baseUrl: string = 'https://echo.merit.systems'
+  baseUrl: string = "https://echo.merit.systems",
 ): Promise<EchoClient> {
   if (!apiKey) {
-    throw new Error('No API key provided');
+    throw new Error("No API key provided");
   }
   return new EchoClient({
     apiKey,
@@ -29,7 +28,7 @@ export async function getAuthenticatedEchoClient(
  * @deprecated Use clippyApi.setState directly in components
  */
 export async function logoutFromEcho(): Promise<void> {
-  console.warn('logoutFromEcho is deprecated, use clippyApi.setState directly');
+  console.warn("logoutFromEcho is deprecated, use clippyApi.setState directly");
 }
 
 /**
@@ -50,14 +49,14 @@ export interface PaymentOptions {
 export async function createEchoPaymentLink(
   apiKey: string,
   options: PaymentOptions = {},
-  baseUrl: string = 'https://echo.merit.systems'
+  baseUrl: string = "https://echo.merit.systems",
 ): Promise<CreatePaymentLinkResponse> {
   const client = await getAuthenticatedEchoClient(apiKey, baseUrl);
 
-  const { amount = 10, description = 'Echo credits' } = options;
+  const { amount = 10, description = "Echo credits" } = options;
 
   if (!amount || amount <= 0) {
-    throw new Error('Amount must be greater than 0');
+    throw new Error("Amount must be greater than 0");
   }
 
   const response = await client.createPaymentLink({
@@ -66,21 +65,20 @@ export async function createEchoPaymentLink(
   });
 
   // Open the payment link in the browser
-  window.open(response.paymentLink.url, '_blank');
+  window.open(response.paymentLink.url, "_blank");
 
   return response;
 }
 
-
 export async function getEchoBalance(
   apiKey: string,
-  baseUrl: string = 'https://echo.merit.systems'
+  baseUrl: string = "https://echo.merit.systems",
 ): Promise<Balance> {
   try {
     const client = await getAuthenticatedEchoClient(apiKey, baseUrl);
     return client.getBalance();
   } catch (error) {
-    console.error('Error getting Echo balance:', error);
+    console.error("Error getting Echo balance:", error);
     return { totalPaid: 0, totalSpent: 0, balance: 0 };
   }
 }

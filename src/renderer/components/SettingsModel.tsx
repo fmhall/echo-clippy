@@ -35,7 +35,8 @@ export const SettingsModel: React.FC = () => {
             border: "1px solid #ccc",
             backgroundColor: activeTab === "echo" ? "#e0e0e0" : "#f5f5f5",
             cursor: "pointer",
-            borderBottom: activeTab === "echo" ? "2px solid #0066cc" : "1px solid #ccc",
+            borderBottom:
+              activeTab === "echo" ? "2px solid #0066cc" : "1px solid #ccc",
           }}
         >
           🌐 Echo Models {hasEchoModel && hasApiKey && "(Active)"}
@@ -48,7 +49,8 @@ export const SettingsModel: React.FC = () => {
             border: "1px solid #ccc",
             backgroundColor: activeTab === "local" ? "#e0e0e0" : "#f5f5f5",
             cursor: "pointer",
-            borderBottom: activeTab === "local" ? "2px solid #0066cc" : "1px solid #ccc",
+            borderBottom:
+              activeTab === "local" ? "2px solid #0066cc" : "1px solid #ccc",
           }}
         >
           💾 Local Models {!hasEchoModel && "(Active)"}
@@ -57,11 +59,7 @@ export const SettingsModel: React.FC = () => {
 
       {/* Tab Content */}
       <div className="tab-content">
-        {activeTab === "echo" ? (
-          <EchoModelTable />
-        ) : (
-          <LocalModelTable />
-        )}
+        {activeTab === "echo" ? <EchoModelTable /> : <LocalModelTable />}
       </div>
     </div>
   );

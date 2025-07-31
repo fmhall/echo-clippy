@@ -12,7 +12,7 @@ export const LocalModelTable: React.FC = () => {
   const sharedState = useSharedState();
   const { models, settings } = sharedState;
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  
+
   // Check if Echo model is active (overrides local model)
   const activeModel = getActiveModel(sharedState);
   const isEchoActive = activeModel.type === "echo";
@@ -88,20 +88,24 @@ export const LocalModelTable: React.FC = () => {
           }}
         >
           <strong>🌐 Echo Model Active</strong>
-          <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "#856404" }}>
-            Local models are inactive because an Echo model ({activeModel.model}) is currently selected.
-            Clear the Echo model selection to use local models.
+          <p
+            style={{ margin: "4px 0 0 0", fontSize: "12px", color: "#856404" }}
+          >
+            Local models are inactive because an Echo model ({activeModel.model}
+            ) is currently selected. Clear the Echo model selection to use local
+            models.
           </p>
         </div>
       )}
-      
+
       <div style={{ marginBottom: "20px" }}>
         <p>
           <strong>Local AI Models</strong> - Downloaded to your computer
         </p>
         <p style={{ fontSize: "12px", color: "#666" }}>
-          These models run entirely on your device. Larger models are more powerful
-          but use more memory and are slower. Models use the GGUF format.
+          These models run entirely on your device. Larger models are more
+          powerful but use more memory and are slower. Models use the GGUF
+          format.
         </p>
       </div>
 
@@ -124,7 +128,13 @@ export const LocalModelTable: React.FC = () => {
           className="model-details sunken-panel"
           style={{ marginTop: "20px", padding: "15px" }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
             <div>
               <strong>{selectedModel.name}</strong>
               {selectedModel.description && (
@@ -132,8 +142,10 @@ export const LocalModelTable: React.FC = () => {
                   {selectedModel.description}
                 </p>
               )}
-              
-              <div style={{ fontSize: "12px", color: "#666", marginTop: "8px" }}>
+
+              <div
+                style={{ fontSize: "12px", color: "#666", marginTop: "8px" }}
+              >
                 <div>Size: {selectedModel.size.toLocaleString()} MB</div>
                 <div>Company: {selectedModel.company || "Unknown"}</div>
                 {selectedModel.imported && (
@@ -155,10 +167,12 @@ export const LocalModelTable: React.FC = () => {
               )}
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+            >
               {!selectedModel.downloaded ? (
-                <button 
-                  disabled={isDownloading} 
+                <button
+                  disabled={isDownloading}
                   onClick={handleDownload}
                   style={{ padding: "6px 12px" }}
                 >
@@ -177,22 +191,22 @@ export const LocalModelTable: React.FC = () => {
                   ) : (
                     <button
                       disabled
-                      style={{ 
-                        padding: "6px 12px", 
+                      style={{
+                        padding: "6px 12px",
                         backgroundColor: "#e0f0e0",
-                        border: "1px solid #90c090" 
+                        border: "1px solid #90c090",
                       }}
                     >
                       ✓ Currently Selected
                     </button>
                   )}
-                  <button 
+                  <button
                     onClick={handleDeleteOrRemove}
-                    style={{ 
-                      padding: "6px 12px", 
+                    style={{
+                      padding: "6px 12px",
                       fontSize: "11px",
                       backgroundColor: "#ffe0e0",
-                      border: "1px solid #ff9090"
+                      border: "1px solid #ff9090",
                     }}
                   >
                     {selectedModel?.imported ? "Remove" : "Delete"} Model
