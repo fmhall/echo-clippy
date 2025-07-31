@@ -22,6 +22,7 @@ export interface SettingsState {
   disableAutoUpdate?: boolean;
   echoApiKey?: string;
   echoBaseUrl?: string;
+  echoRouterUrl?: string;
   echoAppId?: string;
 }
 
@@ -56,6 +57,7 @@ export const DEFAULT_SETTINGS: SettingsState = {
   disableAutoUpdate: false,
   echoApiKey: undefined,
   echoBaseUrl: "https://echo.merit.systems",
+  echoRouterUrl: "https://echo.router.merit.systems",
   echoAppId: "81c9fab2-d93b-49e9-8a4e-04229e7fc4d9",
 };
 

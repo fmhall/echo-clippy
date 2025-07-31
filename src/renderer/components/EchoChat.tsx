@@ -5,6 +5,7 @@ import { Message } from "./Message";
 import { ChatInput } from "./ChatInput";
 import { ANIMATION_KEYS_BRACKETS } from "../clippy-animation-helpers";
 import { useChat } from "../contexts/ChatContext";
+import { useSharedState } from "../contexts/SharedStateContext";
 import { electronAi } from "../clippyApi";
 import { log } from "../logging";
 
@@ -14,48 +15,36 @@ export type EchoChatProps = {
 
 export function EchoChat({ style }: EchoChatProps) {
   const { setAnimationKey, setStatus, status, messages, addMessage } = useChat();
+  const sharedState = useSharedState();
   const [streamingMessageContent, setStreamingMessageContent] = useState<string>("");
   const [lastRequestUUID, setLastRequestUUID] = useState<string>(crypto.randomUUID());
   const [useEchoMode, setUseEchoMode] = useState(false);
-  const [echoApiKey, setEchoApiKey] = useState<string>("");
   const [openai, setOpenai] = useState<OpenAI | null>(null);
 
-  // Check for Echo API key and create OpenAI client
-  useEffect(() => {
-    const checkApiKey = () => {
-      const storedApiKey = localStorage.getItem('echo_api_key');
-      console.log('EchoChat: Checking for API key:', !!storedApiKey);
-      if (storedApiKey) {
-        console.log('EchoChat: API key found, creating OpenAI client');
-        setEchoApiKey(storedApiKey);
-        const client = new OpenAI({
-          apiKey: storedApiKey,
-          baseURL: 'https://echo.router.merit.systems/81c9fab2-d93b-49e9-8a4e-04229e7fc4d9',
-          dangerouslyAllowBrowser: true,
-        });
-        setOpenai(client);
-      } else {
-        console.log('EchoChat: No API key found');
-        setEchoApiKey("");
-        setOpenai(null);
-        setUseEchoMode(false); // Disable Echo mode if no API key
-      }
-    };
-
-    checkApiKey();
-
-    // Listen for storage changes (in case user updates API key in another tab/window)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'echo_api_key') {
-        checkApiKey();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
+  // Get echo settings from shared state
+  const echoApiKey = sharedState.settings.echoApiKey || "";
+  const echoBaseUrl = sharedState.settings.echoBaseUrl || "https://echo.merit.systems";
+  const echoRouterUrl = sharedState.settings.echoRouterUrl || "https://echo.router.merit.systems";
+  const echoAppId = sharedState.settings.echoAppId || "81c9fab2-d93b-49e9-8a4e-04229e7fc4d9";
   const isEchoConnected = !!echoApiKey;
+
+  // Create OpenAI client when echo settings change
+  useEffect(() => {
+    console.log('EchoChat: Checking for API key:', !!echoApiKey);
+    if (echoApiKey) {
+      console.log('EchoChat: API key found, creating OpenAI client');
+      const client = new OpenAI({
+        apiKey: echoApiKey,
+        baseURL: echoRouterUrl,
+        dangerouslyAllowBrowser: true,
+      });
+      setOpenai(client);
+    } else {
+      console.log('EchoChat: No API key found');
+      setOpenai(null);
+      setUseEchoMode(false); // Disable Echo mode if no API key
+    }
+  }, [echoApiKey, echoRouterUrl, echoAppId]);
 
   const handleAbortMessage = () => {
     electronAi.abortRequest(lastRequestUUID);
