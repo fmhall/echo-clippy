@@ -46,4 +46,5 @@ export const IpcMessages = {
 
   // Screenshot
   TAKE_SCREENSHOT: "clippy_take_screenshot",
+  LIST_SOURCES: "clippy_list_sources",
 };

@@ -106,23 +106,34 @@ export function setupIpcListeners() {
   );
 
   // Screenshot
-  ipcMain.handle(IpcMessages.TAKE_SCREENSHOT, async () => {
-    try {
-      const sources = await desktopCapturer.getSources({
-        types: ["screen"],
-        thumbnailSize: { width: 1920, height: 1080 },
-      });
+  ipcMain.handle(
+    IpcMessages.TAKE_SCREENSHOT,
+    async (_, sourceNumber: number = 0) => {
+      try {
+        const sources = await desktopCapturer.getSources({
+          types: ["screen"],
+          thumbnailSize: { width: 1920, height: 1080 },
+        });
 
-      if (sources.length > 0) {
-        // Get the primary screen
-        const primarySource = sources[0];
-        return primarySource.thumbnail.toDataURL();
+        if (sources.length > 0) {
+          // Get the primary screen
+          return sources[sourceNumber].thumbnail.toDataURL();
+        }
+
+        throw new Error("No screen sources available");
+      } catch (error) {
+        console.error("Error taking screenshot:", error);
+        throw error;
       }
+    },
+  );
 
-      throw new Error("No screen sources available");
-    } catch (error) {
-      console.error("Error taking screenshot:", error);
-      throw error;
-    }
+  // List sources
+  ipcMain.handle(IpcMessages.LIST_SOURCES, async () => {
+    const sources = await desktopCapturer.getSources({
+      types: ["screen"],
+      thumbnailSize: { width: 1920, height: 1080 },
+    });
+    return sources;
   });
 }

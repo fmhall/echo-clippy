@@ -4,8 +4,7 @@ import { useOpenAIVision } from "./EchoUtils";
 import { log } from "../logging";
 import { clippyApi } from "../clippyApi";
 
-const SPEECH_SHOW_TIME = 3000; // Show message for 3 seconds
-const SPEECH_WAIT_TIME = 8000; // Wait 8 seconds before showing next message
+const SPEECH_SHOW_TIME = 9000; // Show message for 3 seconds
 
 const SPEECH_MESSAGES = [
   "Hello! I'm Clippy, your helpful assistant.",
@@ -78,10 +77,13 @@ export function ClippySpeechBubble() {
             model,
             hasApiKey: !!apiKey,
             echoRouterUrl,
+            visionSourceNumber: settings.visionSourceNumber,
           });
 
           // Take a screenshot
-          const screenshotDataUrl = await clippyApi.takeScreenshot();
+          const screenshotDataUrl = await clippyApi.takeScreenshot(
+            settings.visionSourceNumber ?? 0,
+          );
           log("Screenshot taken, data URL length:", screenshotDataUrl.length);
 
           // Use OpenAI Vision to analyze the screenshot
@@ -105,7 +107,7 @@ export function ClippySpeechBubble() {
         addTimeout(() => {
           setIsVisible(false);
           // Schedule next message after visionCadence (converted to milliseconds)
-          const messageCadence = (settings.visionCadence ?? 10) * 1000;
+          const messageCadence = (settings.visionCadence ?? 30) * 1000;
           addTimeout(() => {
             showRandomMessage();
           }, messageCadence);
@@ -121,7 +123,7 @@ export function ClippySpeechBubble() {
         addTimeout(() => {
           setIsVisible(false);
           // Schedule next message after visionCadence (converted to milliseconds)
-          const messageCadence = (settings.visionCadence ?? 10) * 1000;
+          const messageCadence = (settings.visionCadence ?? 30) * 1000;
           addTimeout(() => {
             showRandomMessage();
           }, messageCadence);

@@ -1,9 +1,15 @@
+import { useEffect, useState } from "react";
 import { clippyApi } from "../clippyApi";
 import { useSharedState } from "../contexts/SharedStateContext";
 import { Checkbox } from "./Checkbox";
 
 export const SettingsAdvanced: React.FC = () => {
   const { settings } = useSharedState();
+  const [sources, setSources] = useState<any[]>([]);
+
+  useEffect(() => {
+    clippyApi.listSources().then(setSources);
+  }, []);
 
   return (
     <div>
@@ -66,6 +72,26 @@ export const SettingsAdvanced: React.FC = () => {
             }}
             style={{ width: "80px", marginLeft: "10px" }}
           />
+        </div>
+        <div className="field-row" style={{ marginTop: "10px" }}>
+          <label htmlFor="visionSourceNumber">Screenshot source:</label>
+          <select
+            id="visionSourceNumber"
+            value={settings.visionSourceNumber ?? 0}
+            onChange={(e) => {
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value)) {
+                clippyApi.setState("settings.visionSourceNumber", value);
+              }
+            }}
+            style={{ width: "80px", marginLeft: "10px" }}
+          >
+            {sources.map((source, index) => (
+              <option key={index} value={index}>
+                {source.name} ({source.id})
+              </option>
+            ))}
+          </select>
         </div>
       </fieldset>
       <fieldset>

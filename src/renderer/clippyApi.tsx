@@ -55,7 +55,8 @@ export type ClippyApi = {
   // Clipboard
   clipboardWrite: (data: Data) => Promise<void>;
   // Screenshot
-  takeScreenshot: () => Promise<string>;
+  takeScreenshot: (sourceNumber?: number) => Promise<string>;
+  listSources: () => Promise<any[]>;
 };
 
 declare global {

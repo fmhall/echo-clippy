@@ -101,7 +101,9 @@ const clippyApi: ClippyApi = {
     ipcRenderer.invoke(IpcMessages.CLIPBOARD_WRITE, data),
 
   // Screenshot
-  takeScreenshot: () => ipcRenderer.invoke(IpcMessages.TAKE_SCREENSHOT),
+  takeScreenshot: (sourceNumber: number = 0) =>
+    ipcRenderer.invoke(IpcMessages.TAKE_SCREENSHOT, sourceNumber),
+  listSources: () => ipcRenderer.invoke(IpcMessages.LIST_SOURCES),
 };
 
 contextBridge.exposeInMainWorld("clippy", clippyApi);
