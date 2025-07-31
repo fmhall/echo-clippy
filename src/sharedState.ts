@@ -24,6 +24,8 @@ export interface SettingsState {
   echoBaseUrl?: string;
   echoRouterUrl?: string;
   echoAppId?: string;
+  useVision?: boolean;
+  visionCadence?: number;
 }
 
 export interface SharedState {
@@ -59,6 +61,8 @@ export const DEFAULT_SETTINGS: SettingsState = {
   echoBaseUrl: "https://echo.merit.systems",
   echoRouterUrl: "https://echo.router.merit.systems",
   echoAppId: "81c9fab2-d93b-49e9-8a4e-04229e7fc4d9",
+  useVision: true,
+  visionCadence: 10,
 };
 
 export const EMPTY_SHARED_STATE: SharedState = {

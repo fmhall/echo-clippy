@@ -64,12 +64,12 @@ export function ClippySpeechBubble() {
 
         // Pick a random message
         let randomMessage: string;
-        if (!apiKey) {
-          log("Using static message - missing OpenAI API key", {
+
+        if (!apiKey || !settings.useVision) {
+          log("Using static message - vision disabled or missing API key", {
             hasApiKey: !!apiKey,
+            useVision: settings.useVision,
             hasEchoRouterUrl: !!echoRouterUrl,
-            apiKeyType: typeof apiKey,
-            echoRouterUrlType: typeof echoRouterUrl,
           });
           randomMessage =
             SPEECH_MESSAGES[Math.floor(Math.random() * SPEECH_MESSAGES.length)];
@@ -85,7 +85,8 @@ export function ClippySpeechBubble() {
           log("Screenshot taken, data URL length:", screenshotDataUrl.length);
 
           // Use OpenAI Vision to analyze the screenshot
-          const prompt = "Describe the image in a very short sentence.";
+          const prompt =
+            "You are Clippy, a helpful but mischievous assistant. Make a cheeky comment about the user's screen. Be short and concise.";
 
           randomMessage = await useOpenAIVision(
             screenshotDataUrl,
@@ -103,10 +104,11 @@ export function ClippySpeechBubble() {
         // Hide the message after SPEECH_SHOW_TIME
         addTimeout(() => {
           setIsVisible(false);
-          // Schedule next message after SPEECH_WAIT_TIME
+          // Schedule next message after visionCadence (converted to milliseconds)
+          const messageCadence = (settings.visionCadence ?? 10) * 1000;
           addTimeout(() => {
             showRandomMessage();
-          }, SPEECH_WAIT_TIME);
+          }, messageCadence);
         }, SPEECH_SHOW_TIME);
       } catch (error) {
         console.error("Error showing speech message:", error);
@@ -118,9 +120,11 @@ export function ClippySpeechBubble() {
 
         addTimeout(() => {
           setIsVisible(false);
+          // Schedule next message after visionCadence (converted to milliseconds)
+          const messageCadence = (settings.visionCadence ?? 10) * 1000;
           addTimeout(() => {
             showRandomMessage();
-          }, SPEECH_WAIT_TIME);
+          }, messageCadence);
         }, SPEECH_SHOW_TIME);
       }
     };
@@ -132,7 +136,13 @@ export function ClippySpeechBubble() {
 
     // Clean up timeouts when component unmounts or dependencies change
     return clearAllTimeouts;
-  }, [model, apiKey, echoRouterUrl]);
+  }, [
+    model,
+    apiKey,
+    echoRouterUrl,
+    settings.useVision,
+    settings.visionCadence,
+  ]);
 
   // Don't render anything if not visible
   if (!isVisible) {

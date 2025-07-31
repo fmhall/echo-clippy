@@ -40,6 +40,35 @@ export const SettingsAdvanced: React.FC = () => {
         </button>
       </fieldset>
       <fieldset>
+        <legend>Vision Features</legend>
+        <Checkbox
+          id="useVision"
+          label="Enable screenshots for vision-capable models"
+          checked={settings.useVision ?? true}
+          onChange={(checked) => {
+            clippyApi.setState("settings.useVision", checked);
+          }}
+        />
+        <div className="field-row" style={{ marginTop: "10px" }}>
+          <label htmlFor="visionCadence">Screenshot interval (seconds):</label>
+          <input
+            id="visionCadence"
+            type="number"
+            min="1"
+            max="300"
+            step="1"
+            value={settings.visionCadence ?? 10}
+            onChange={(e) => {
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value)) {
+                clippyApi.setState("settings.visionCadence", value);
+              }
+            }}
+            style={{ width: "80px", marginLeft: "10px" }}
+          />
+        </div>
+      </fieldset>
+      <fieldset>
         <legend>Delete All Models</legend>
         <p>
           This will delete all models from Clippy. This action is not
