@@ -23,28 +23,30 @@ export function EchoChat({ style }: EchoChatProps) {
 
   // Get echo settings from shared state
   const echoApiKey = sharedState.settings.echoApiKey || "";
-  const echoBaseUrl = sharedState.settings.echoBaseUrl || "https://echo.merit.systems";
   const echoRouterUrl = sharedState.settings.echoRouterUrl || "https://echo.router.merit.systems";
-  const echoAppId = sharedState.settings.echoAppId || "81c9fab2-d93b-49e9-8a4e-04229e7fc4d9";
+  const selectedEchoModel = sharedState.settings.selectedEchoModel;
+  const selectedLocalModel = sharedState.settings.selectedModel;
   const isEchoConnected = !!echoApiKey;
+  const shouldUseEcho = isEchoConnected && !!selectedEchoModel;
 
   // Create OpenAI client when echo settings change
   useEffect(() => {
-    console.log('EchoChat: Checking for API key:', !!echoApiKey);
-    if (echoApiKey) {
-      console.log('EchoChat: API key found, creating OpenAI client');
+    console.log('EchoChat: Checking for API key and selected model:', !!echoApiKey, selectedEchoModel);
+    if (echoApiKey && selectedEchoModel) {
+      console.log('EchoChat: API key and model found, creating OpenAI client');
       const client = new OpenAI({
         apiKey: echoApiKey,
         baseURL: echoRouterUrl,
         dangerouslyAllowBrowser: true,
       });
       setOpenai(client);
+      setUseEchoMode(true); // Auto-enable Echo mode when model is selected
     } else {
-      console.log('EchoChat: No API key found');
+      console.log('EchoChat: No API key or model found');
       setOpenai(null);
-      setUseEchoMode(false); // Disable Echo mode if no API key
+      setUseEchoMode(false);
     }
-  }, [echoApiKey, echoRouterUrl, echoAppId]);
+  }, [echoApiKey, echoRouterUrl, selectedEchoModel]);
 
   const handleAbortMessage = () => {
     electronAi.abortRequest(lastRequestUUID);
@@ -75,7 +77,7 @@ Available animations: ${ANIMATION_KEYS_BRACKETS.join(", ")}
 Use animation keys at the start of your response when appropriate. For example, start with [Thinking] when pondering, [Congratulate] when celebrating, [Alert] for warnings, etc.`;
 
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: selectedEchoModel || 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           ...messages.slice(-10).map(msg => ({
@@ -203,9 +205,9 @@ Use animation keys at the start of your response when appropriate. For example, 
   };
 
   const handleSendMessage = async (message: string) => {
-    console.log('EchoChat: handleSendMessage called', { useEchoMode, isEchoConnected, hasOpenai: !!openai });
-    if (useEchoMode && isEchoConnected && openai) {
-      console.log('EchoChat: Using Echo mode');
+    console.log('EchoChat: handleSendMessage called', { shouldUseEcho, isEchoConnected, hasOpenai: !!openai, selectedEchoModel });
+    if (shouldUseEcho && openai) {
+      console.log('EchoChat: Using Echo mode with model:', selectedEchoModel);
       await handleSendMessageWithEcho(message);
     } else {
       console.log('EchoChat: Using local mode');
@@ -215,29 +217,39 @@ Use animation keys at the start of your response when appropriate. For example, 
 
   return (
     <div style={style} className="chat-container">
-      {/* Mode selector */}
-      {isEchoConnected && (
+      {/* Model status indicator */}
+      {(shouldUseEcho || isEchoConnected) && (
         <div style={{ 
           padding: "8px", 
           borderBottom: "1px solid #ccc", 
           fontSize: "12px",
           display: "flex",
           alignItems: "center",
-          gap: "8px"
+          justifyContent: "space-between",
+          backgroundColor: shouldUseEcho ? "#f0f8ff" : "#fafafa"
         }}>
-          <label>
-            <input
-              type="checkbox"
-              checked={useEchoMode}
-              onChange={(e) => {
-                console.log('EchoChat: Toggle changed to:', e.target.checked);
-                setUseEchoMode(e.target.checked);
-              }}
-            />
-            Use Echo Cloud AI (GPT-4o-mini)
-          </label>
-          {useEchoMode && (
-            <span style={{ color: "#0066cc" }}>🌐 Cloud</span>
+          <div>
+            {shouldUseEcho ? (
+              <>
+                <span style={{ color: "#0066cc", fontWeight: "bold" }}>🌐 Echo Model:</span>
+                <span style={{ marginLeft: "6px" }}>{selectedEchoModel}</span>
+              </>
+            ) : isEchoConnected ? (
+              <span style={{ color: "#666" }}>Using local model: {selectedLocalModel}</span>
+            ) : (
+              <span style={{ color: "#666" }}>Using local model - add cloud models in settings.</span>
+            )}
+          </div>
+          {shouldUseEcho && (
+            <span style={{ 
+              fontSize: "10px", 
+              color: "#0066cc",
+              backgroundColor: "#e0f0ff",
+              padding: "2px 6px",
+              borderRadius: "3px"
+            }}>
+              CLOUD
+            </span>
           )}
         </div>
       )}

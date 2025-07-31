@@ -51,9 +51,13 @@ export function setupIpcListeners() {
     IpcMessages.STATE_GET_FULL,
     () => getStateManager().store.store,
   );
-  ipcMain.handle(IpcMessages.STATE_SET, (_, key: string, value: any) =>
-    getStateManager().store.set(key, value),
-  );
+  ipcMain.handle(IpcMessages.STATE_SET, (_, key: string, value: any) => {
+    if (value === undefined) {
+      getStateManager().store.delete(key as any);
+    } else {
+      getStateManager().store.set(key, value);
+    }
+  });
   ipcMain.handle(IpcMessages.STATE_GET, (_, key: string) =>
     getStateManager().store.get(key),
   );
