@@ -48,6 +48,7 @@ export type ChatContextType = {
   startNewChat: () => Promise<void>;
   deleteChat: (chatId: string) => Promise<void>;
   deleteAllChats: () => Promise<void>;
+  getSystemPrompt: () => string;
 };
 
 export const ChatContext = createContext<ChatContextType | undefined>(
@@ -360,6 +361,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     isModelLoaded: isAnyModelReady, // Use computed value that includes Echo models
     isChatWindowOpen,
     setIsChatWindowOpen,
+    getSystemPrompt,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

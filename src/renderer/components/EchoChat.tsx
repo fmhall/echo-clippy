@@ -3,18 +3,18 @@ import OpenAI from "openai";
 
 import { Message } from "./Message";
 import { ChatInput } from "./ChatInput";
-import { ANIMATION_KEYS_BRACKETS } from "../clippy-animation-helpers";
 import { useChat } from "../contexts/ChatContext";
 import { useSharedState } from "../contexts/SharedStateContext";
 import { electronAi } from "../clippyApi";
 import { log } from "../logging";
+import { filterMessageContent } from "../helpers/message-content-helpers";
 
 export type EchoChatProps = {
   style?: React.CSSProperties;
 };
 
 export function EchoChat({ style }: EchoChatProps) {
-  const { setAnimationKey, setStatus, status, messages, addMessage } = useChat();
+  const { setAnimationKey, setStatus, status, messages, addMessage, getSystemPrompt } = useChat();
   const sharedState = useSharedState();
   const [streamingMessageContent, setStreamingMessageContent] = useState<string>("");
   const [lastRequestUUID, setLastRequestUUID] = useState<string>(crypto.randomUUID());
@@ -71,10 +71,8 @@ export function EchoChat({ style }: EchoChatProps) {
     log('Echo chat thinking');
 
     try {
-      // Create a system prompt that includes animation instructions
-      const systemPrompt = `You are Clippy, Microsoft's helpful assistant. You can express emotions and actions through animation keys. 
-Available animations: ${ANIMATION_KEYS_BRACKETS.join(", ")}
-Use animation keys at the start of your response when appropriate. For example, start with [Thinking] when pondering, [Congratulate] when celebrating, [Alert] for warnings, etc.`;
+      // Use the system prompt from shared state
+      const systemPrompt = getSystemPrompt();
 
       const response = await openai.chat.completions.create({
         model: selectedEchoModel || 'gpt-4o-mini',
@@ -272,33 +270,3 @@ Use animation keys at the start of your response when appropriate. For example, 
   );
 }
 
-/**
- * Filter the message content to get the text and animation key
- *
- * @param content - The content of the message
- * @returns The text and animation key
- */
-function filterMessageContent(content: string): {
-  text: string;
-  animationKey: string;
-} {
-  let text = content;
-  let animationKey = "";
-
-  if (content === "[") {
-    text = "";
-  } else if (/^\[[A-Za-z]*$/m.test(content)) {
-    text = content.replace(/^\[[A-Za-z]*$/m, "").trim();
-  } else {
-    // Check for animation keys in brackets
-    for (const key of ANIMATION_KEYS_BRACKETS) {
-      if (content.startsWith(key)) {
-        animationKey = key.slice(1, -1);
-        text = content.slice(key.length).trim();
-        break;
-      }
-    }
-  }
-
-  return { text, animationKey };
-}
