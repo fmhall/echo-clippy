@@ -19,3 +19,15 @@ fieldset button:first-of-type {
 fieldset button:last-of-type {
   margin-right: 0;
 }
+
+/* Speech bubble fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

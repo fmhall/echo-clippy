@@ -8,6 +8,7 @@ import {
 import { useChat } from "../contexts/ChatContext";
 import { log } from "../logging";
 import { useDebugState } from "../contexts/DebugContext";
+import { ClippySpeechBubble } from "./ClippySpeechBubble";
 
 const WAIT_TIME = 6000;
 
@@ -91,39 +92,48 @@ export function Clippy() {
   }, [animationKey, playAnimation]);
 
   return (
-    <div>
-      <div
-        className="app-drag"
-        style={{
-          position: "absolute",
-          height: "93px",
-          width: "124px",
-          backgroundColor: enableDragDebug ? "blue" : "transparent",
-          opacity: 0.5,
-          zIndex: 5,
-        }}
-      >
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+      }}
+    >
+      <ClippySpeechBubble />
+      <div style={{ position: "relative" }}>
         <div
-          className="app-no-drag"
+          className="app-drag"
           style={{
             position: "absolute",
-            height: "80px",
-            width: "45px",
-            backgroundColor: enableDragDebug ? "red" : "transparent",
-            zIndex: 10,
-            right: "40px",
-            top: "2px",
-            cursor: "help",
+            height: "93px",
+            width: "124px",
+            backgroundColor: enableDragDebug ? "blue" : "transparent",
+            opacity: 0.5,
+            zIndex: 5,
           }}
-          onClick={toggleChat}
-        ></div>
+        >
+          <div
+            className="app-no-drag"
+            style={{
+              position: "absolute",
+              height: "80px",
+              width: "45px",
+              backgroundColor: enableDragDebug ? "red" : "transparent",
+              zIndex: 10,
+              right: "40px",
+              top: "2px",
+              cursor: "help",
+            }}
+            onClick={toggleChat}
+          ></div>
+        </div>
+        <img
+          className="app-no-select"
+          src={animation.src}
+          draggable={false}
+          alt="Clippy"
+        />
       </div>
-      <img
-        className="app-no-select"
-        src={animation.src}
-        draggable={false}
-        alt="Clippy"
-      />
     </div>
   );
 }

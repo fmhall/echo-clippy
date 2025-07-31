@@ -99,6 +99,9 @@ const clippyApi: ClippyApi = {
   // Clipboard
   clipboardWrite: (data: Data) =>
     ipcRenderer.invoke(IpcMessages.CLIPBOARD_WRITE, data),
+
+  // Screenshot
+  takeScreenshot: () => ipcRenderer.invoke(IpcMessages.TAKE_SCREENSHOT),
 };
 
 contextBridge.exposeInMainWorld("clippy", clippyApi);

@@ -1,4 +1,4 @@
-import { clipboard, Data, ipcMain } from "electron";
+import { clipboard, Data, ipcMain, desktopCapturer } from "electron";
 import {
   toggleChatWindow,
   maximizeChatWindow,
@@ -104,4 +104,25 @@ export function setupIpcListeners() {
   ipcMain.handle(IpcMessages.CLIPBOARD_WRITE, (_, data: Data) =>
     clipboard.write(data, "clipboard"),
   );
+
+  // Screenshot
+  ipcMain.handle(IpcMessages.TAKE_SCREENSHOT, async () => {
+    try {
+      const sources = await desktopCapturer.getSources({
+        types: ["screen"],
+        thumbnailSize: { width: 1920, height: 1080 },
+      });
+
+      if (sources.length > 0) {
+        // Get the primary screen
+        const primarySource = sources[0];
+        return primarySource.thumbnail.toDataURL();
+      }
+
+      throw new Error("No screen sources available");
+    } catch (error) {
+      console.error("Error taking screenshot:", error);
+      throw error;
+    }
+  });
 }

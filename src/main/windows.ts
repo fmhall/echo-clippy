@@ -34,8 +34,8 @@ export async function createMainWindow() {
   const settings = getStateManager().store.get("settings");
 
   mainWindow = new BrowserWindow({
-    width: 125,
-    height: 100,
+    width: 600, // Adjusted width to accommodate smaller speech bubble (180px + 10px margin)
+    height: 160, // Increased height for speech bubble (93px Clippy + 40px bubble + 8px spacing + padding)
     transparent: true,
     hasShadow: false,
     frame: false,

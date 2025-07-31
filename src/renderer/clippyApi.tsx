@@ -54,6 +54,8 @@ export type ClippyApi = {
   offNewChat: () => void;
   // Clipboard
   clipboardWrite: (data: Data) => Promise<void>;
+  // Screenshot
+  takeScreenshot: () => Promise<string>;
 };
 
 declare global {
