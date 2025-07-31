@@ -1,3 +1,4 @@
+import { EchoModelState } from "./echoModels";
 import { ModelState } from "./models";
 
 export type DefaultFont =
@@ -9,6 +10,7 @@ export type DefaultFontSize = number;
 
 export interface SettingsState {
   selectedModel?: string;
+  selectedEchoModel?: string;
   systemPrompt?: string;
   clippyAlwaysOnTop?: boolean;
   chatAlwaysOnTop?: boolean;
@@ -18,10 +20,14 @@ export interface SettingsState {
   defaultFont: DefaultFont;
   defaultFontSize: number;
   disableAutoUpdate?: boolean;
+  echoApiKey?: string;
+  echoBaseUrl?: string;
+  echoAppId?: string;
 }
 
 export interface SharedState {
   models: ModelState;
+  echoModels: EchoModelState;
   settings: SettingsState;
 }
 
@@ -48,10 +54,14 @@ export const DEFAULT_SETTINGS: SettingsState = {
   defaultFont: "Tahoma",
   defaultFontSize: 12,
   disableAutoUpdate: false,
+  echoApiKey: undefined,
+  echoBaseUrl: "https://echo.merit.systems",
+  echoAppId: "81c9fab2-d93b-49e9-8a4e-04229e7fc4d9",
 };
 
 export const EMPTY_SHARED_STATE: SharedState = {
   models: {},
+  echoModels: {},
   settings: {
     ...DEFAULT_SETTINGS,
   },

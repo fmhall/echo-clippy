@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 import { clippyApi } from "../clippyApi";
-import { Chat } from "./Chat";
+import { EchoChat } from "./EchoChat";
 import { Settings } from "./Settings";
 import { useBubbleView } from "../contexts/BubbleViewContext";
 import { Chats } from "./Chats";
@@ -34,7 +34,7 @@ export function Bubble() {
   let content = null;
 
   if (currentView === "chat") {
-    content = <Chat style={chatStyle} />;
+    content = <EchoChat style={chatStyle} />;
   } else if (currentView.startsWith("settings")) {
     content = <Settings onClose={() => setCurrentView("chat")} />;
   } else if (currentView === "chats") {

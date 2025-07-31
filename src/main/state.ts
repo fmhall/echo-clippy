@@ -5,6 +5,7 @@ import { IpcMessages } from "../ipc-messages";
 import { getModelManager, getModelPath, isModelOnDisk } from "./models";
 import { EMPTY_SHARED_STATE, SettingsState, SharedState } from "../sharedState";
 import { BUILT_IN_MODELS } from "../models";
+import { ECHO_MODELS } from "../echoModels";
 import { getLogger } from "./logger";
 import { setupAppMenu } from "./menu";
 
@@ -13,6 +14,7 @@ export class StateManager {
     defaults: {
       ...EMPTY_SHARED_STATE,
       models: getModelManager().getInitialRendererModelState(),
+      echoModels: ECHO_MODELS,
     },
   });
 
@@ -36,7 +38,15 @@ export class StateManager {
     const settings = this.store.get("settings");
 
     // Default model exists?
-    if (settings.selectedModel) {
+
+    if (settings.selectedEchoModel) {
+      const model = this.store.get("echoModels")[settings.selectedEchoModel];
+
+      if (!model) {
+        settings.selectedEchoModel = undefined;
+      }
+    }
+    else if (settings.selectedModel) {
       const model = this.store.get("models")[settings.selectedModel];
 
       if (!model || !isModelOnDisk(model)) {
@@ -50,6 +60,15 @@ export class StateManager {
 
     if (settings.temperature === undefined) {
       settings.temperature = 0.7;
+    }
+
+    // Ensure echo configuration has default values
+    if (settings.echoBaseUrl === undefined) {
+      settings.echoBaseUrl = "https://echo.merit.systems";
+    }
+
+    if (settings.echoAppId === undefined) {
+      settings.echoAppId = "81c9fab2-d93b-49e9-8a4e-04229e7fc4d9";
     }
 
     this.store.set("settings", settings);

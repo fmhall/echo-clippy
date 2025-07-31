@@ -5,6 +5,7 @@ import { ChatInput } from "./ChatInput";
 import { ANIMATION_KEYS_BRACKETS } from "../clippy-animation-helpers";
 import { useChat } from "../contexts/ChatContext";
 import { electronAi } from "../clippyApi";
+import { log } from "../logging";
 
 export type ChatProps = {
   style?: React.CSSProperties;
@@ -24,6 +25,7 @@ export function Chat({ style }: ChatProps) {
   };
 
   const handleSendMessage = async (message: string) => {
+    log('Chat sending message');
     if (status !== "idle") {
       return;
     }

@@ -5,9 +5,11 @@ import { isModelDownloading } from "../../helpers/model-helpers";
 
 const EMPTY_SHARED_STATE: SharedState = {
   models: {},
+  echoModels: {},
   settings: {
     ...DEFAULT_SETTINGS,
     selectedModel: undefined,
+    selectedEchoModel: undefined,
     systemPrompt: undefined,
   },
 };
