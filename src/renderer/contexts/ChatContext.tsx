@@ -247,6 +247,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   // If selectedModel is undefined or not available, set it to the first downloaded model
   useEffect(() => {
     if (
+      // !settings.selectedEchoModel ||
       !settings.selectedModel ||
       !models[settings.selectedModel] ||
       !models[settings.selectedModel].downloaded
@@ -347,7 +348,6 @@ export function useChat() {
 
   return context;
 }
-
 function messageRecordFromMessage(message: Message): MessageRecord {
   return {
     id: message.id,
@@ -380,3 +380,4 @@ function messagesToInitialPrompts(messages: Message[]): LanguageModelPrompt[] {
     content: message.content || "",
   }));
 }
+
