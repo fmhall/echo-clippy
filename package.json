@@ -14,12 +14,12 @@
   },
   "keywords": [],
   "author": {
-    "name": "Felix Rieseberg",
-    "email": "fr@makenotion.com"
+    "name": "Mason Hall",
+    "email": "masonhall@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/felixrieseberg/clippy"
+    "url": "https://github.com/fmhall/echo-clippy"
   },
   "license": "MIT",
   "devDependencies": {
